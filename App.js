@@ -1,20 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
+import Layout from './components/Layout';
+
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { AuthProvider } from './context/AuthContext';
+import { AxiosProvider } from './context/AxiosContext';
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 export default function App() {
   return (
+    <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <SafeAreaProvider>
+      <SafeAreaView  style={styles.container} >
+   
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+     <Layout/>
       <StatusBar style="auto" />
     </View>
+    </SafeAreaView>
+    </SafeAreaProvider>
+     </AuthProvider>
+     </QueryClientProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    
+    
   },
 });
