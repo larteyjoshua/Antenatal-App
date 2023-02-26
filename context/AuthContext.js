@@ -5,23 +5,25 @@ const {Provider} = AuthContext;
 
 const AuthProvider = ({children}) => {
     const [authState, setAuthState] = useState({
-      userId: null,
+      accessToken: null,
       authenticated: false,
       username: null,
-      loading: false
+      loading: false,
+      phone_number: null
     });
 
+    const getAccessToken = () => {
+      return authState.accessToken;
+    };
 
-    const getUserID= () => {
-        return authState.userId;
-      };
-     
+  
       const logout = async () => {
         setAuthState({
-            userId: null,
+          accessToken: null,
           authenticated: false,
           username: null,
           loading: false,
+          phone_number: null
         });
       };
 
@@ -29,7 +31,7 @@ const AuthProvider = ({children}) => {
         <Provider
           value={{
             authState,
-            getUserID,
+            getAccessToken,
             setAuthState,
             logout,
           }}>

@@ -11,6 +11,7 @@ import Comment from '../components/Comment';
 import Appointment from '../components/Appointment';
 import { useQuery, useMutation } from "react-query";
 import { AuthContext } from "../context/AuthContext";
+import { AxiosContext } from '../context/AxiosContext';
 import axios from 'axios';
 import Splash from '../components/Splash';
 
@@ -21,16 +22,17 @@ const screenHeight = Dimensions.get("window").height;
 
 const Dashboard = () => {
     const authContext = useContext(AuthContext);
+    const { authAxios } = useContext(AxiosContext);
     const [appointmentDate, setAppointmentDate]= useState("");
     const [comments, setComments]= useState([]);
     const [message, setMessage]= useState('');
-    const userId = authContext.authState.userId;
     const [appointmentID, setAppointmentID]= useState(0);
+    
   
     const { isLoading, refetch: getAppointmentWithComments } = useQuery(
         "appointmentWithComments",
         async () => {
-          return await axios.get(`http://192.168.8.165:8000/v1/appointment-expected-mother/${userId}`,
+          return await authAxios.get(`/appointment-expected-mother`,
         );
         },
         {
@@ -52,11 +54,11 @@ const Dashboard = () => {
       
   const {mutate: commentFunction } = useMutation(
     async () => {
-      return await axios.post('http://192.168.8.165:8000/v1/comment/add', {
-        'expected_mother_id': userId,
-        'appointment_id':appointmentID,
-          'message': message
-      });
+      const data = { 
+
+      'appointment_id':appointmentID,
+        'message': message}
+      return await authAxios.post('/comment/add', data);
     },
     {
       onSuccess: (response) => {
@@ -79,7 +81,7 @@ const Dashboard = () => {
 }
 else {
     setStatus(false)
-    Alert.alert("Login Failed","Please Enter Your Phone Number");
+    Alert.alert("Failure","Please Enter Your Comment");
   }
     
   };
@@ -100,18 +102,7 @@ else {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     
     <View style={styles.container}>
-       
-       
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <Pressable>
-        <Appointment date = {appointmentDate} />
-        <View style= {styles.commentArea}>
-        {comments && comments.map(comment =>
-                        
-                         <Comment  key = {comment.id} comment={comment} />
-                          )}
-        </View>
-        <View animation={"lightSpeedIn"} style={styles.userInputArea}>
+    <View animation={"lightSpeedIn"} style={styles.userInputArea}>
             <View style={styles.userInput}>
               <TextInput
                 placeholder="Comment"
@@ -129,6 +120,18 @@ else {
             </Pressable>
             </View>
           </View>
+        <Appointment date = {appointmentDate} />
+    
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <Pressable>
+        
+        <View style= {styles.commentArea}>
+        {comments && comments.map(comment =>
+                        
+                         <Comment  key = {comment.id} comment={comment} />
+                          )}
+        </View>
+       
           </Pressable>
           </ScrollView>
     </View>

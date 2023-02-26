@@ -17,8 +17,9 @@ import { FontAwesome } from "@expo/vector-icons";
 import LogoArea from "../components/LogoArea";
 import { AuthContext } from "../context/AuthContext";
 import { useMutation } from 'react-query';
-import axios from 'axios';
 import Splash from "../components/Splash";
+import { AxiosContext } from "../context/AxiosContext";
+import { MaterialIcons } from '@expo/vector-icons'; 
 
 
 const windowWidth = Dimensions.get("window").width;
@@ -29,23 +30,36 @@ const formAreaHight = windowHeight * 0.56;
 
 const Login = ({ navigation }) => {
   const [telephone, setTelephone] = useState("");
+  const [pin, setPin] = useState("");
   const [status, setStatus] = useState(false);
   const authContext = useContext(AuthContext);
+  const { publicAxios } = useContext(AxiosContext);
+
  
+  
 
   const {mutate: LoginFunction } = useMutation(
+    
     async () => {
-      return await axios.post('http://192.168.8.165:8000/v1/expected-mother-login', {
-        'phone_number': telephone
+      let formData = new FormData();
+    formData.append("username", telephone);
+    formData.append("password", pin);
+    console.log(formData)
+      return await publicAxios({
+        method: "post",
+        url: "/login",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" }
       });
     },
     {
       onSuccess: (response) => {
         setStatus(false)
-        const userId = response.data.id;
+        // console.log(response.data)
         const username = response.data.name;
+        const token = response.data.access_token;
         authContext.setAuthState({
-        userId: userId,
+        accessToken: token,
         authenticated: true,
         username: username,
         loading: status,
@@ -56,8 +70,9 @@ const Login = ({ navigation }) => {
         setStatus(false) 
         Alert.alert("Login Failed",err.message);
         authContext.setAuthState({
-            userId: null,
+            accessToken: null,
             authenticated: false,
+            username: null,
             username: null,
             loading: status,
           });
@@ -70,18 +85,23 @@ const Login = ({ navigation }) => {
   const onLogin = async () => {
   
     setStatus(true)
-    if (telephone.length >= 10){
+    if (telephone.length >= 10 && pin.length >= 4){
         LoginFunction()
 }
 else {
     setStatus(false)
-    Alert.alert("Login Failed","Please Enter Your Phone Number");
+    Alert.alert("Login Failed","Please Enter Your Details Entered");
   }
     
   };
 
+  const onForgetPassword = async () => {
+    navigation.navigate('ForgetPassword')
+  }
 
-  if(authContext.authState.loading) {
+  
+
+  if(status) {
     return <Splash/>
   }
 
@@ -108,11 +128,27 @@ else {
                 <FontAwesome name="user-o" size={24} color="purple" />
               </View>
             </View>
+
+            <View style={styles.userInput}>
+              <TextInput
+                placeholder="Pin"
+                keyboardType="numeric"
+                autoCapitalize="none"
+                style={styles.input}
+                onChangeText={(newPin) => setPin(newPin)}
+                defaultValue={pin}
+              />
+              <View style={styles.emailIcon}>
+              <MaterialIcons name="person-pin-circle" size={24} color="purple" />
+              </View>
+            </View>
             <View style={styles.loginButton}>
             <Pressable style={styles.button} onPress={() => onLogin()}>
             <Text style={styles.lText}>Login</Text>
             </Pressable>
+           
             </View>
+            <Text style={styles.fText} onPress={() => onForgetPassword()}>Forget Pin?</Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -139,6 +175,15 @@ const styles = StyleSheet.create({
     color: "purple"
 
 },
+fText: {
+  marginTop: 20,
+  fontSize: 20,
+  display: 'flex',
+  justifyContent: 'flex-end',
+  alignItems: 'flex-end',
+  color: "#FFFF"
+
+},
 
   mainPage: {
     backgroundColor: 'purple',
@@ -155,6 +200,7 @@ const styles = StyleSheet.create({
 
   },
   userInput: {
+    marginTop: 10,
     height: 40,
     borderWidth: 2,
     borderRadius: 14,

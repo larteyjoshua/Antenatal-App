@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -12,7 +13,9 @@ const queryClient = new QueryClient();
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+    
     <AuthProvider>
+    <AxiosProvider>
       <SafeAreaProvider>
       <SafeAreaView  style={styles.container} >
    
@@ -22,7 +25,9 @@ export default function App() {
     </View>
     </SafeAreaView>
     </SafeAreaProvider>
+    </AxiosProvider>
      </AuthProvider>
+    
      </QueryClientProvider>
   );
 }

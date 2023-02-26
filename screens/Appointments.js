@@ -5,18 +5,19 @@ import { View, ScrollView, Pressable, StyleSheet, Alert } from 'react-native';
  import axios from 'axios';
  import Splash from '../components/Splash';
  import ListAppointment from '../components/ListAppointment';
+ import { AxiosContext } from '../context/AxiosContext';
  
 
 const Appointments = () => {
 
   const authContext = useContext(AuthContext);
+  const { authAxios } = useContext(AxiosContext);
   const [appointments, setAppointments]= useState([]);
-  const userId = authContext.authState.userId;
 
   const { isLoading, refetch: getAppointments } = useQuery(
     "appointments",
     async () => {
-      return await axios.get(`http://192.168.8.165:8000/v1/appointments-expected-mother/${userId}`,
+      return await authAxios.get(`/appointments-expected-mother`,
     );
     },
     {

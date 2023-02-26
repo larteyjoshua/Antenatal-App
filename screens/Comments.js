@@ -3,18 +3,19 @@ import { View, ScrollView, Pressable, StyleSheet, Alert } from 'react-native';
  import Comment from '../components/Comment';
  import { useQuery } from "react-query";
  import { AuthContext } from '../context/AuthContext';
- import axios from 'axios';
  import Splash from '../components/Splash';
+ import { AxiosContext } from '../context/AxiosContext';
 
 const Comments = () => {
   const authContext = useContext(AuthContext);
+  const { authAxios } = useContext(AxiosContext);
   const [comments, setComments]= useState([]);
   const userId = authContext.authState.userId;
 
   const { isLoading, refetch: getComments } = useQuery(
     "comments",
     async () => {
-      return await axios.get(`http://192.168.8.165:8000/v1/comments-expected-mother/${userId}`,
+      return await authAxios.get(`/comments-expected-mother`,
     );
     },
     {
