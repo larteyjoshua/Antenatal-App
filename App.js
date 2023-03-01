@@ -9,7 +9,13 @@ import { AuthProvider } from './context/AuthContext';
 import { AxiosProvider } from './context/AxiosContext';
 import { QueryClient, QueryClientProvider } from "react-query";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true
+    }
+  }
+});
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -17,23 +23,20 @@ export default function App() {
     <AuthProvider>
     <AxiosProvider>
       <SafeAreaProvider>
-      <SafeAreaView  style={styles.container} >
-   
-    <View style={styles.container}>
+      <View  style={styles.container} >
      <Layout/>
       <StatusBar style="auto" />
     </View>
-    </SafeAreaView>
     </SafeAreaProvider>
     </AxiosProvider>
      </AuthProvider>
-    
      </QueryClientProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    display: 'flex',
     flex: 1,
     justifyContent: 'center',
     
