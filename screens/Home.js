@@ -29,6 +29,7 @@ const Home = () => {
         },
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
+        unmountOnBlur: true
       })}>
     <Tab.Screen name="Dashboard" component={Dashboard} />
     <Tab.Screen name="Comments" component={Comments} />

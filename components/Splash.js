@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       backgroundColor: 'purple',
       alignItems: 'center',
-      height: windowHeight
+      height: windowHeight + 50
     },
     horizontal: {
       flexDirection: 'row',

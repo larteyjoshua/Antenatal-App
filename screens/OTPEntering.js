@@ -29,6 +29,7 @@ const windowHeight = Dimensions.get("window").height;
 const inputWidth = windowWidth * 1;
 const formAreaWidth = windowWidth;
 const formAreaHight = windowHeight * 0.56;
+const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 
 
 const OTPEntering = ({navigation}) => {
@@ -108,7 +109,7 @@ const OTPEntering = ({navigation}) => {
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
+        keyboardVerticalOffset={keyboardVerticalOffset}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View  style={styles.mainPage} >
@@ -167,7 +168,7 @@ const OTPEntering = ({navigation}) => {
     mainPage: {
       backgroundColor: 'purple',
       position: 'absolute',
-      height: windowHeight
+      height: windowHeight + 50
     },
    
     userInputArea: {

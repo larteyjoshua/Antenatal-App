@@ -12,7 +12,6 @@ import Appointment from '../components/Appointment';
 import { useQuery, useMutation } from "react-query";
 import { AuthContext } from "../context/AuthContext";
 import { AxiosContext } from '../context/AxiosContext';
-import axios from 'axios';
 import Splash from '../components/Splash';
 
 
@@ -27,6 +26,8 @@ const Dashboard = () => {
     const [comments, setComments]= useState([]);
     const [message, setMessage]= useState('');
     const [appointmentID, setAppointmentID]= useState(0);
+    const [status, setStatus] = useState(false);
+
     
   
     const { isLoading, refetch: getAppointmentWithComments } = useQuery(
@@ -39,15 +40,15 @@ const Dashboard = () => {
          
           onSuccess: (res) => {
           const appointment = res.data.map(item => item.Appointment);
-          const message = res.data.map(item => item.Comment);
+          const message = res?.data?.map(item => item.Comment);
             setAppointmentDate(appointment[0]?.appointed_date);
             setComments(message);
-            setAppointmentID(appointment[0].id)
+            setAppointmentID(appointment[0]?.id)
           },
           onError: (err) => {
             Alert.alert("Failure",err.message);
           },
-        }
+        },
       );
 
 
@@ -58,6 +59,7 @@ const Dashboard = () => {
 
       'appointment_id':appointmentID,
         'message': message}
+        console.log(data)
       return await authAxios.post('/comment/add', data);
     },
     {
@@ -75,14 +77,21 @@ const Dashboard = () => {
 
 
   const onComment = async () => {
-    
-    if (message.length !== null){
+
+    if (appointmentID === undefined){
+      setStatus(false)
+      Alert.alert("Failure","You dont have any Appointment yet!");
+     }
+
+    else if (message.length !== 0 && appointmentID !== undefined){
       commentFunction()
 }
-else {
+
+  else {
     setStatus(false)
     Alert.alert("Failure","Please Enter Your Comment");
   }
+   
     
   };
 
