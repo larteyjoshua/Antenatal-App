@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "antenatal-app",
-    "slug": "antenatal-app",
+    "name": "Antel App",
+    "slug": "Antel app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/app-splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#9B309D"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -18,11 +18,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "requireFullScreen": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },

@@ -2,15 +2,15 @@ import React, {useContext, useState, useEffect} from 'react';
 import { View, ScrollView, Pressable, StyleSheet, Alert } from 'react-native';
  import Comment from '../components/Comment';
  import { useQuery } from "react-query";
- import { AuthContext } from '../context/AuthContext';
  import Splash from '../components/Splash';
  import { AxiosContext } from '../context/AxiosContext';
+ import { useIsFocused } from "@react-navigation/native"; 
 
 const Comments = () => {
-  const authContext = useContext(AuthContext);
+
+  const isFocused = useIsFocused();
   const { authAxios } = useContext(AxiosContext);
   const [comments, setComments]= useState([]);
-  const userId = authContext.authState.userId;
 
   const { isLoading, refetch: getComments } = useQuery(
     "comments",
@@ -33,7 +33,7 @@ const Comments = () => {
   );
   useEffect(() => {
     getComments();
-  },[]);
+  },[isFocused]);
 
   if(isLoading) {
     return <Splash/>

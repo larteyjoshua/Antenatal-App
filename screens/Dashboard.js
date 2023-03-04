@@ -1,117 +1,133 @@
-import React, {useState, useContext, useEffect} from 'react';
-import { View, Text,StyleSheet,Dimensions,TextInput,
-    KeyboardAvoidingView,
-    Platform,
-    Keyboard,
-    TouchableWithoutFeedback,
-    Pressable,
-    ScrollView,
-    Alert  } from 'react-native';
-import Comment from '../components/Comment';
-import Appointment from '../components/Appointment';
+import React, { useState, useContext, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Pressable,
+  ScrollView,
+  Alert,
+} from "react-native";
+import Comment from "../components/Comment";
+import Appointment from "../components/Appointment";
 import { useQuery, useMutation } from "react-query";
-import { AuthContext } from "../context/AuthContext";
-import { AxiosContext } from '../context/AxiosContext';
-import Splash from '../components/Splash';
-
+import { AxiosContext } from "../context/AxiosContext";
+import Splash from "../components/Splash";
+import { useIsFocused } from "@react-navigation/native";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-
 const Dashboard = () => {
-    const authContext = useContext(AuthContext);
-    const { authAxios } = useContext(AxiosContext);
-    const [appointmentDate, setAppointmentDate]= useState("");
-    const [comments, setComments]= useState([]);
-    const [message, setMessage]= useState('');
-    const [appointmentID, setAppointmentID]= useState(0);
-    const [status, setStatus] = useState(false);
+  const isFocused = useIsFocused();
+  const { authAxios } = useContext(AxiosContext);
+  const [appointmentDate, setAppointmentDate] = useState("");
+  const [comments, setComments] = useState([]);
+  const [message, setMessage] = useState("");
+  const [appointmentID, setAppointmentID] = useState(0);
+  const [status, setStatus] = useState(false);
 
-    
-  
-    const { isLoading, refetch: getAppointmentWithComments } = useQuery(
-        "appointmentWithComments",
-        async () => {
-          return await authAxios.get(`/appointment-expected-mother`,
-        );
-        },
-        {
-         
-          onSuccess: (res) => {
-          const appointment = res.data.map(item => item.Appointment);
-          const message = res?.data?.map(item => item.Comment);
-            setAppointmentDate(appointment[0]?.appointed_date);
-            setComments(message);
-            setAppointmentID(appointment[0]?.id)
-          },
-          onError: (err) => {
-            Alert.alert("Failure",err.message);
-          },
-        },
-      );
-
-
-      
-  const {mutate: commentFunction } = useMutation(
+  const { refetch: getAppointment } = useQuery(
+    "appointment",
     async () => {
-      const data = { 
-
-      'appointment_id':appointmentID,
-        'message': message}
-        console.log(data)
-      return await authAxios.post('/comment/add', data);
+      setStatus(true);
+      return await authAxios.get(`/latest-appointment-expected-mother`);
     },
     {
-      onSuccess: (response) => {
-        setMessage('');
-        Alert.alert("Successful","Comment Added");
-        getAppointmentWithComments()
+      onSuccess: (res) => {
+        setStatus(false);
+        const appointment = res.data;
+        setAppointmentDate(appointment?.appointed_date);
+        setAppointmentID(appointment?.id);
+        setTimeout(() => {
+          getAppointmentWithComments();
+        },400)
+        
       },
       onError: (err) => {
-        Alert.alert("Failure",err.message);
-         
+        setStatus(false);
+        Alert.alert("Failure", err.message);
       },
     }
   );
 
+  const { refetch: getAppointmentWithComments } = useQuery(
+    "appointmentWithComments",
+    async () => {
+      setStatus(true);
+      return await authAxios.get(`/appointment-expected-mother/${appointmentID}`, appointmentID);
+    },
+    {
+      onSuccess: (res) => {
+        setStatus(false);
+        const message = res?.data?.map((item) => item.Comment);
+        setComments(message);
+      },
+      onError: (err) => {
+        setStatus(false);
+        Alert.alert("Failure", err.message);
+      },
+    }
+  );
+
+  const { mutate: commentFunction } = useMutation(
+    async () => {
+      setStatus(true);
+      const data = {
+        appointment_id: appointmentID,
+        message: message,
+      };
+      return await authAxios.post("/comment/add", data);
+    },
+    {
+      onSuccess: (response) => {
+        setStatus(false);
+        Alert.alert("Successful", "Comment Added");
+        getAppointmentWithComments();
+      },
+      onError: (err) => {
+        setStatus(false);
+        Alert.alert("Failure", err.message);
+      },
+    }
+  );
 
   const onComment = async () => {
-
-    if (appointmentID === undefined){
-      setStatus(false)
-      Alert.alert("Failure","You dont have any Appointment yet!");
-     }
-
-    else if (message.length !== 0 && appointmentID !== undefined){
-      commentFunction()
-}
-
-  else {
-    setStatus(false)
-    Alert.alert("Failure","Please Enter Your Comment");
-  }
-   
-    
+    if (appointmentID === undefined) {
+      setStatus(false);
+      Alert.alert("Failure", "You dont have any Appointment yet!");
+    } else if (message.length !== 0 && appointmentID !== undefined) {
+      setStatus(false);
+      commentFunction();
+    } else {
+      setStatus(false);
+      Alert.alert("Failure", "Please Enter Your Comment");
+    }
   };
 
-      useEffect(() => {
-        getAppointmentWithComments();
-      },[]);
-  
-      if(isLoading) {
-        return <Splash/>
-      };
+  useEffect(() => {
+    getAppointment();
+  }, [isFocused]);
+
+
+
+  if (status) {
+    return <Splash />;
+  }
 
   return (
     <KeyboardAvoidingView
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    style={styles.container}
-  >
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    
-    <View style={styles.container}>
-    <View animation={"lightSpeedIn"} style={styles.userInputArea}>
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View animation={"lightSpeedIn"} style={styles.userInputArea}>
             <View style={styles.userInput}>
               <TextInput
                 placeholder="Comment"
@@ -121,110 +137,102 @@ const Dashboard = () => {
                 onChangeText={(newComment) => setMessage(newComment)}
                 defaultValue={message}
               />
-            
             </View>
             <View style={styles.loginButton}>
-            <Pressable style={styles.button} onPress={() => onComment()}>
-            <Text style={styles.lText}>Submit</Text>
-            </Pressable>
+              <Pressable style={styles.button} onPress={() => onComment()}>
+                <Text style={styles.lText}>Submit</Text>
+              </Pressable>
             </View>
           </View>
-        <Appointment date = {appointmentDate} />
-    
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <Pressable>
-        
-        <View style= {styles.commentArea}>
-        {comments && comments.map(comment =>
-                        
-                         <Comment  key = {comment.id} comment={comment} />
-                          )}
-        </View>
-       
-          </Pressable>
+          <Appointment date={appointmentDate} />
+
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <Pressable>
+              <View style={styles.commentArea}>
+                {comments &&
+                  comments.map((comment) => (
+                    <Comment key={comment?.id} comment={comment} />
+                  ))}
+              </View>
+            </Pressable>
           </ScrollView>
-    </View>
-    </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'white',
-    },
-    appointment: {
-        marginTop: 20,
-        backgroundColor: 'purple',
-        color: "#FFFF",
-        width: screenWidth * 0.95,
-        height: screenHeight * 0.2,
-        backgroundColor: 'purple',
-        borderRadius: 20,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+  container: {
+    flex: 1,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+  },
+  appointment: {
+    marginTop: 20,
+    backgroundColor: "purple",
+    color: "#FFFF",
+    width: screenWidth * 0.95,
+    height: screenHeight * 0.2,
+    backgroundColor: "purple",
+    borderRadius: 20,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  appointmentTitle: {
+    fontWeight: "bold",
+    fontSize: 20,
+    color: "#FFFF",
+  },
+  commentArea: {
+    marginTop: 20,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  input: {
+    paddingLeft: 40,
+  },
+  userInputArea: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    marginTop: 20,
+  },
+  userInput: {
+    height: 100,
+    borderWidth: 2,
+    borderRadius: 14,
+    width: screenWidth * 0.95,
+    alignContent: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFF",
+  },
+  input: {
+    paddingLeft: 40,
+  },
 
-    },
-    appointmentTitle: {
-        fontWeight: 'bold',
-        fontSize: 20,
-        color: '#FFFF'
-    },
-    commentArea: {
-        marginTop: 20,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    input: {
-        paddingLeft: 40,
-      },
-      userInputArea: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        textAlign: "center",
-        marginTop: 20,
-    
-      },
-      userInput: {
-        height: 100,
-        borderWidth: 2,
-        borderRadius: 14,
-        width:  screenWidth * 0.95,
-        alignContent: "center",
-        justifyContent: "center",
-        backgroundColor: "#FFFF",
-      },
-      input: {
-        paddingLeft: 40,
-      },
-    
-      loginButton: {
-        marginTop: 20,
-       
-      },
-      button: {
-        borderRadius: 14,
-        backgroundColor: 'purple',
-        width: screenWidth * 0.95,
-        color: '#FFFF'
-      },
-      lText: {
-        fontSize: 30,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        color: "#FFFF"
-    
-    },
-  });
-  
+  loginButton: {
+    marginTop: 20,
+  },
+  button: {
+    borderRadius: 14,
+    backgroundColor: "purple",
+    width: screenWidth * 0.95,
+    color: "#FFFF",
+  },
+  lText: {
+    fontSize: 30,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    color: "#FFFF",
+  },
+});
 
 export default Dashboard;
