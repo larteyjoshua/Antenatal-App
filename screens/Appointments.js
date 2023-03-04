@@ -2,15 +2,16 @@ import React, {useContext, useState, useEffect} from 'react';
 import { View, ScrollView, Pressable, StyleSheet, Alert } from 'react-native';
  import { useQuery } from "react-query";
  import { AuthContext } from '../context/AuthContext';
- import axios from 'axios';
  import Splash from '../components/Splash';
  import ListAppointment from '../components/ListAppointment';
  import { AxiosContext } from '../context/AxiosContext';
+ import { useIsFocused } from "@react-navigation/native"; 
+ 
  
 
 const Appointments = () => {
+  const isFocused = useIsFocused();
 
-  const authContext = useContext(AuthContext);
   const { authAxios } = useContext(AxiosContext);
   const [appointments, setAppointments]= useState([]);
 
@@ -34,7 +35,7 @@ const Appointments = () => {
   );
   useEffect(() => {
     getAppointments();
-  },[]);
+  },[isFocused]);
 
   if(isLoading) {
     return <Splash/>

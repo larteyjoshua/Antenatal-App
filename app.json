@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "antenatal-app",
-    "slug": "antenatal-app",
+    "name": "Antel App",
+    "slug": "AntelApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/app-splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#9B309D"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -18,12 +18,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.joshualartey.antenatalapp"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.joshualartey.antenatalapp"
@@ -33,7 +32,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "09fe6aec-04f3-4c82-ab0f-317b7d447366"
+        "projectId": "8dbefc21-c236-4f70-8682-4ba40249b0c8"
       }
     }
   }
