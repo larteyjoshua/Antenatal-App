@@ -58,7 +58,6 @@ const ForgetPassword = ({navigation}) => {
       }
     );
   
-  
     const onForgetPassword = async () => {
     
       setStatus(true)
