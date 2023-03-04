@@ -33,6 +33,7 @@ const ForgetPassword = ({navigation}) => {
     const [status, setStatus] = useState(false);
     const authContext = useContext(AuthContext);
     const {publicAxios} = useContext(AxiosContext);
+    const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
   
    
   
@@ -83,7 +84,7 @@ const ForgetPassword = ({navigation}) => {
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
+        keyboardVerticalOffset={keyboardVerticalOffset}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View  style={styles.mainPage} >
@@ -93,7 +94,7 @@ const ForgetPassword = ({navigation}) => {
               <View style={styles.userInput}>
                 <TextInput
                   placeholder="Phone Number"
-                  keyboardType="numeric"
+                  keyboardType="number-pad"
                   autoCapitalize="none"
                   style={styles.input}
                   onChangeText={(newNumber) => setTelephone(newNumber)}
@@ -149,7 +150,7 @@ const ForgetPassword = ({navigation}) => {
     mainPage: {
       backgroundColor: 'purple',
       position: 'absolute',
-      height: windowHeight
+      height: windowHeight + 50
     },
    
     userInputArea: {

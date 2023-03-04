@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef} from "react";
 import {
   View,
   StyleSheet,
@@ -10,7 +10,8 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
-  Pressable 
+  Pressable,
+  ScrollView
 } from "react-native";
 
 import { FontAwesome } from "@expo/vector-icons";
@@ -34,9 +35,8 @@ const Login = ({ navigation }) => {
   const [status, setStatus] = useState(false);
   const authContext = useContext(AuthContext);
   const { publicAxios } = useContext(AxiosContext);
-
+  const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
  
-  
 
   const {mutate: LoginFunction } = useMutation(
     
@@ -44,7 +44,6 @@ const Login = ({ navigation }) => {
       let formData = new FormData();
     formData.append("username", telephone);
     formData.append("password", pin);
-    console.log(formData)
       return await publicAxios({
         method: "post",
         url: "/login",
@@ -106,9 +105,13 @@ else {
   }
 
   return (
+    <ScrollView contentContainerStyle={{
+      flexGrow: 1,
+    }}>
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
+      keyboardVerticalOffset={keyboardVerticalOffset}
+
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View  style={styles.mainPage} >
@@ -118,7 +121,7 @@ else {
             <View style={styles.userInput}>
               <TextInput
                 placeholder="Phone Number"
-                keyboardType="numeric"
+                keyboardType="number-pad"
                 autoCapitalize="none"
                 style={styles.input}
                 onChangeText={(newNumber) => setTelephone(newNumber)}
@@ -132,7 +135,7 @@ else {
             <View style={styles.userInput}>
               <TextInput
                 placeholder="Pin"
-                keyboardType="numeric"
+                keyboardType="number-pad"
                 autoCapitalize="none"
                 style={styles.input}
                 onChangeText={(newPin) => setPin(newPin)}
@@ -153,10 +156,11 @@ else {
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
-  wText: { marginTop: 20,
+  wText: { marginTop: 12,
           fontSize: 30,
           display: 'flex',
           justifyContent: 'center',
@@ -176,7 +180,7 @@ const styles = StyleSheet.create({
 
 },
 fText: {
-  marginTop: 20,
+  marginTop: 12,
   fontSize: 20,
   display: 'flex',
   justifyContent: 'flex-end',
@@ -186,9 +190,10 @@ fText: {
 },
 
   mainPage: {
+    display: 'flex',
     backgroundColor: 'purple',
     position: 'absolute',
-    height: windowHeight
+    height: windowHeight + 50
   },
  
   userInputArea: {
@@ -196,7 +201,7 @@ fText: {
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-    marginTop: 20,
+    marginTop: 5,
 
   },
   userInput: {
@@ -234,7 +239,7 @@ fText: {
   },
 
   loginButton: {
-    marginTop: 20,
+    marginTop: 10,
    
   },
   button: {

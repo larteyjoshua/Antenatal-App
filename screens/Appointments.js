@@ -24,7 +24,7 @@ const Appointments = () => {
       enabled: false,
        retry: 1,
       onSuccess: (res) => {
-        setAppointments(res.data)
+        setAppointments(res?.data)
 
       },
       onError: (err) => {

@@ -23,7 +23,7 @@ const Comments = () => {
        retry: 1,
      
       onSuccess: (res) => {
-        setComments(res.data);
+        setComments(res?.data);
 
       },
       onError: (err) => {
