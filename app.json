@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Antel App",
-    "slug": "Antel app",
+    "slug": "AntelApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,17 +18,22 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "requireFullScreen": true
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.joshualartey.antenatalapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8dbefc21-c236-4f70-8682-4ba40249b0c8"
+      }
     }
   }
 }

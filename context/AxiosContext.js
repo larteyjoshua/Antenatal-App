@@ -4,12 +4,15 @@ import {AuthContext} from './AuthContext';
 
 const AxiosContext = createContext();
 const {Provider} = AxiosContext;
+const baseServerURL = 'https://antenatal-monitoring-system.onrender.com/v1'
+// const baseServerURL = 'http://192.168.43.66:8000/v1'
+
 
 const AxiosProvider = ({children}) => {
     const authContext = useContext(AuthContext);
   
     const authAxios = axios.create({
-      baseURL: 'http://192.168.43.66:8000/v1',
+      baseURL: baseServerURL,
     });
 
     authAxios.interceptors.request.use(
@@ -26,7 +29,7 @@ const AxiosProvider = ({children}) => {
     );
 
     const publicAxios = axios.create({
-        baseURL: 'http://192.168.43.66:8000/v1',
+        baseURL: baseServerURL,
       });
 
       
