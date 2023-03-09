@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
       height: 'auto',
       flexWrap: 'wrap',
       borderRadius: 10,
-      borderWidth: 2,
       padding: 4,
        backgroundColor: "#E6E6FA"
       
@@ -36,6 +35,10 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: '#000',
         fontStyle: 'italic',
+        padding: 4,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 
     commentDate: {

@@ -31,6 +31,7 @@ const Dashboard = () => {
   const [message, setMessage] = useState("");
   const [appointmentID, setAppointmentID] = useState(0);
   const [status, setStatus] = useState(false);
+  const [appointmentTime, setAppointmentTime] = useState("");
 
   const { refetch: getAppointment } = useQuery(
     "appointment",
@@ -43,6 +44,7 @@ const Dashboard = () => {
         setStatus(false);
         const appointment = res.data;
         setAppointmentDate(appointment?.appointed_date);
+        setAppointmentTime(appointment?.appointed_time);
         setAppointmentID(appointment?.id);
         setTimeout(() => {
           getAppointmentWithComments();
@@ -144,7 +146,7 @@ const Dashboard = () => {
               </Pressable>
             </View>
           </View>
-          <Appointment date={appointmentDate} />
+          <Appointment date={appointmentDate} time={appointmentTime} />
 
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <Pressable>
