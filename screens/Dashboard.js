@@ -90,6 +90,7 @@ const Dashboard = () => {
       onSuccess: (response) => {
         setStatus(false);
         Alert.alert("Successful", "Comment Added");
+        setMessage('')
         getAppointmentWithComments();
       },
       onError: (err) => {
@@ -129,6 +130,7 @@ const Dashboard = () => {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
+          <View style={styles.formArea}>
           <View animation={"lightSpeedIn"} style={styles.userInputArea}>
             <View style={styles.userInput}>
               <TextInput
@@ -138,11 +140,15 @@ const Dashboard = () => {
                 style={styles.input}
                 onChangeText={(newComment) => setMessage(newComment)}
                 defaultValue={message}
+                multiline = {true}
+                maxLength={200}
               />
+            </View>
+          
             </View>
             <View style={styles.loginButton}>
               <Pressable style={styles.button} onPress={() => onComment()}>
-                <Text style={styles.lText}>Submit</Text>
+                <Text style={styles.lText}>send</Text>
               </Pressable>
             </View>
           </View>
@@ -195,37 +201,51 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  input: {
-    paddingLeft: 40,
-  },
   userInputArea: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
     marginTop: 20,
+   
   },
   userInput: {
-    height: 100,
-    borderWidth: 2,
-    borderRadius: 14,
-    width: screenWidth * 0.95,
+    minHeight: 50,
+    maxHeight: 'auto',
+    borderWidth: 1,
+    borderRadius: 10,
+    width: screenWidth * 0.60,
     alignContent: "center",
     justifyContent: "center",
     backgroundColor: "#FFFF",
+    display: 'flex',
+    flexShrink: 1
+   
   },
   input: {
     paddingLeft: 40,
+    width: screenWidth * 0.50,
+    flexShrink: 1,
+    minHeight: 50,
+    maxHeight: 'auto',
   },
 
   loginButton: {
     marginTop: 20,
+    marginLeft: 5
   },
   button: {
-    borderRadius: 14,
+    borderRadius: 10,
     backgroundColor: "purple",
-    width: screenWidth * 0.95,
+    width: screenWidth * 0.25,
     color: "#FFFF",
+    minHeight: 50,
+  },
+  formArea: {
+    
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 40,
   },
   lText: {
     fontSize: 30,

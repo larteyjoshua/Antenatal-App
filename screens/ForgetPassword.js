@@ -10,7 +10,8 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
-  Pressable 
+  Pressable,
+  ScrollView
 } from "react-native";
 
 import { FontAwesome } from "@expo/vector-icons";
@@ -82,6 +83,10 @@ const ForgetPassword = ({navigation}) => {
     }
   
     return (
+      <ScrollView contentContainerStyle={{
+        flexGrow: 1,
+      }}>
+      <Pressable>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={keyboardVerticalOffset}
@@ -106,7 +111,7 @@ const ForgetPassword = ({navigation}) => {
               </View>
               <View style={styles.loginButton}>
               <Pressable style={styles.button} onPress={() => onForgetPassword()}>
-              <Text style={styles.lText}>Submit</Text>
+              <Text style={styles.lText}>Reset Pin</Text>
               </Pressable>
               <Text style={styles.fText} onPress={() => onLogin()}>Remember Pin? Login</Text>
               </View>
@@ -114,6 +119,8 @@ const ForgetPassword = ({navigation}) => {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
+      </Pressable>
+    </ScrollView>
     );
   };
   const styles = StyleSheet.create({

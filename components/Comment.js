@@ -2,15 +2,21 @@ import React from 'react';
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
+import moment from 'moment';
+
 const Comment = ({comment}) => {
+  const dateTimeAgo = moment(new Date(comment?.dateAdded)).fromNow();
+
   return (
+    <View>
     <View style={styles.container}>
       <Text style={styles.commentText}>{comment?.message}</Text>
-      <View>
-      <Text >{comment?.dateAdded}</Text>
-      </View>
-     
     </View>
+    <View  style={styles.timeStyle}>
+      <Text >{dateTimeAgo}</Text>
+      </View>
+      </View>
+    
   );
 }
 
@@ -18,8 +24,7 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 20,
       display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: 'flex-start',
       backgroundColor: '#FFFF',
       color: "#FFFF",
       width: screenWidth * 0.95,
@@ -31,6 +36,12 @@ const styles = StyleSheet.create({
       
 
     },
+    timeStyle:{
+      display: 'flex',
+     alignItems: 'flex-end'
+
+    },
+
     commentText: {
         fontSize: 15,
         color: '#000',

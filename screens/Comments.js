@@ -11,10 +11,12 @@ const Comments = () => {
   const isFocused = useIsFocused();
   const { authAxios } = useContext(AxiosContext);
   const [comments, setComments]= useState([]);
+  const [status, setStatus] = useState(false);
 
   const { isLoading, refetch: getComments } = useQuery(
     "comments",
     async () => {
+      setStatus(true);
       return await authAxios.get(`/comments-expected-mother`,
     );
     },
@@ -24,10 +26,12 @@ const Comments = () => {
      
       onSuccess: (res) => {
         setComments(res?.data);
+        setStatus(false);
 
       },
       onError: (err) => {
         Alert.alert("Failure",err.message);
+        setStatus(false);
       },
     }
   );
@@ -35,7 +39,7 @@ const Comments = () => {
     getComments();
   },[isFocused]);
 
-  if(isLoading) {
+  if(status) {
     return <Splash/>
   };
 

@@ -1,7 +1,6 @@
 import React, {useContext, useState, useEffect} from 'react';
 import { View, ScrollView, Pressable, StyleSheet, Alert } from 'react-native';
  import { useQuery } from "react-query";
- import { AuthContext } from '../context/AuthContext';
  import Splash from '../components/Splash';
  import ListAppointment from '../components/ListAppointment';
  import { AxiosContext } from '../context/AxiosContext';
@@ -14,10 +13,12 @@ const Appointments = () => {
 
   const { authAxios } = useContext(AxiosContext);
   const [appointments, setAppointments]= useState([]);
+  const [status, setStatus] = useState(false);
 
-  const { isLoading, refetch: getAppointments } = useQuery(
+  const {refetch: getAppointments } = useQuery(
     "appointments",
     async () => {
+      setStatus(true);
       return await authAxios.get(`/appointments-expected-mother`,
     );
     },
@@ -25,11 +26,13 @@ const Appointments = () => {
       enabled: false,
        retry: 1,
       onSuccess: (res) => {
-        setAppointments(res?.data)
+        setAppointments(res?.data);
+        setStatus(false);
 
       },
       onError: (err) => {
         Alert.alert("Failure",err.message);
+        setStatus(false);
       },
     }
   );
@@ -37,7 +40,7 @@ const Appointments = () => {
     getAppointments();
   },[isFocused]);
 
-  if(isLoading) {
+  if(status) {
     return <Splash/>
   };
 

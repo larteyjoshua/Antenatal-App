@@ -10,7 +10,8 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
-  Pressable 
+  Pressable,
+  ScrollView
 } from "react-native";
 
 import { FontAwesome } from "@expo/vector-icons";
@@ -107,6 +108,10 @@ const OTPEntering = ({navigation}) => {
     }
   
     return (
+      <ScrollView contentContainerStyle={{
+        flexGrow: 1,
+      }}>
+      <Pressable>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={keyboardVerticalOffset}
@@ -132,6 +137,8 @@ const OTPEntering = ({navigation}) => {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
+       </Pressable>
+       </ScrollView>
     );
   };
   const styles = StyleSheet.create({
@@ -181,8 +188,6 @@ const OTPEntering = ({navigation}) => {
     },
     userInput: {
       height: 60,
-    //   borderWidth: 2,
-    //   borderRadius: 14,
       width: inputWidth,
       alignContent: "center",
       justifyContent: "center",

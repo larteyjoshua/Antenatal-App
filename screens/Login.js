@@ -108,11 +108,7 @@ else {
     <ScrollView contentContainerStyle={{
       flexGrow: 1,
     }}>
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={keyboardVerticalOffset}
-
-    >
+    <Pressable>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View  style={styles.mainPage} >
           <LogoArea />
@@ -155,7 +151,7 @@ else {
           </View>
         </View>
       </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+      </Pressable>
     </ScrollView>
   );
 };

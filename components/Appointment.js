@@ -2,19 +2,22 @@ import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { Fontisto } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+import moment from 'moment';
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const Appointment = ({ date, time }) => {
+  const formattedTime = moment(time|| '00:00: 00 AM', "HH:mm:ss A").format("hh:mm A");
+  const formattedDate = moment(date || '00/00/0000').format("dddd, MMMM Do YYYY");
   return (
     <View style={styles.appointment}>
       <Text style={styles.appointmentTitle}>Latest Antenatal Appointment</Text>
       <Text style={styles.appointmentTitle}>
-        <Fontisto name="date" size={20} color="#FFFF" /> {date}
+        <Fontisto name="date" size={20} color="#FFFF" /> {formattedDate}
       </Text>
       <Text style={styles.appointmentTitle}>
-        <MaterialIcons name="access-time" size={20} color="#FFFF" /> {time}
+        <MaterialIcons name="access-time" size={20} color="#FFFF" /> {formattedTime}
       </Text>
     </View>
   );
